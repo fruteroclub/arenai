@@ -1,0 +1,25 @@
+{
+  "name": "arenai",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@pkmn/data": "^0.10.6",
+    "@pkmn/dex": "^0.10.6",
+    "@pkmn/sets": "^5.2.0",
+    "@pkmn/sim": "^0.10.6"
+  },
+  "devDependencies": {
+    "@types/node": "^25.2.3",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}
