@@ -1,4 +1,4 @@
-export const GYM_REGISTRY_ADDRESS = "0x4D2f65e1460b2Bed024126E4E61428745A6De47D" as const;
+export const GYM_REGISTRY_ADDRESS = "0xebDeae236ED701195823214e59D7a4245a2F1B3C" as const;
 
 export const GYM_REGISTRY_ABI = [
   {
@@ -42,6 +42,34 @@ export const GYM_REGISTRY_ABI = [
     name: "isRegistered",
     inputs: [{ name: "trainer", type: "address" }],
     outputs: [{ name: "", type: "bool" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "registrationFee",
+    inputs: [],
+    outputs: [{ name: "", type: "uint256" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "setRegistrationFee",
+    inputs: [{ name: "newFee", type: "uint256" }],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "withdrawFees",
+    inputs: [],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "owner",
+    inputs: [],
+    outputs: [{ name: "", type: "address" }],
     stateMutability: "view",
   },
 ] as const;

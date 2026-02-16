@@ -6,6 +6,7 @@ import "../src/GymRegistry.sol";
 
 contract GymRegistryTest is Test {
     GymRegistry registry;
+    address deployer = address(this);
 
     function setUp() public {
         registry = new GymRegistry();
@@ -17,38 +18,69 @@ contract GymRegistryTest is Test {
         p[2] = GymRegistry.Pokemon("Salamence", "Dragon", "Flying");
     }
 
-    function testRegisterGym() public {
-        registry.registerGym("Kukulcan", "Dragon", "strategic", "wind remembers", _pokemon());
+    function testRegisterGymWithFee() public {
+        registry.registerGym{value: 1 ether}("Kukulcan", "Dragon", "strategic", "wind remembers", _pokemon());
         assertTrue(registry.isRegistered(address(this)));
         assertEq(registry.gymCount(), 1);
     }
 
-    function testUpdateGym() public {
-        registry.registerGym("Kukulcan", "Dragon", "strategic", "cry1", _pokemon());
+    function testRegisterGymWithoutFeeReverts() public {
+        vm.expectRevert("Insufficient registration fee");
+        registry.registerGym("Kukulcan", "Dragon", "strategic", "wind remembers", _pokemon());
+    }
+
+    function testUpdateGymIsFree() public {
+        registry.registerGym{value: 1 ether}("Kukulcan", "Dragon", "strategic", "cry1", _pokemon());
+        // Update should be free
         registry.registerGym("Kukulcan", "Dragon", "strategic", "cry2", _pokemon());
         assertEq(registry.gymCount(), 1);
         (,,,string memory cry,,) = registry.getGym(address(this));
         assertEq(cry, "cry2");
     }
 
-    function testGetAllGyms() public {
-        registry.registerGym("A", "Fire", "a", "a", _pokemon());
-        vm.prank(address(0x1));
-        registry.registerGym("B", "Water", "b", "b", _pokemon());
-        address[] memory all = registry.getAllGyms();
-        assertEq(all.length, 2);
+    function testSetRegistrationFee() public {
+        registry.setRegistrationFee(2 ether);
+        assertEq(registry.registrationFee(), 2 ether);
     }
 
-    function testMultipleGyms() public {
-        for (uint i = 1; i <= 4; i++) {
-            vm.prank(address(uint160(i)));
-            registry.registerGym("Gym", "Type", "arch", "cry", _pokemon());
-        }
-        assertEq(registry.gymCount(), 4);
+    function testSetRegistrationFeeNonOwnerReverts() public {
+        vm.prank(address(0x1));
+        vm.expectRevert("Not owner");
+        registry.setRegistrationFee(2 ether);
+    }
+
+    function testWithdrawFees() public {
+        registry.registerGym{value: 1 ether}("Kukulcan", "Dragon", "strategic", "cry", _pokemon());
+        uint256 before = address(this).balance;
+        registry.withdrawFees();
+        assertEq(address(this).balance, before + 1 ether);
+    }
+
+    function testWithdrawFeesNonOwnerReverts() public {
+        registry.registerGym{value: 1 ether}("Kukulcan", "Dragon", "strategic", "cry", _pokemon());
+        vm.prank(address(0x1));
+        vm.expectRevert("Not owner");
+        registry.withdrawFees();
+    }
+
+    function testRegisterGymFor() public {
+        registry.registerGymFor{value: 1 ether}(address(0x2), "Test", "Fire", "a", "cry", _pokemon());
+        assertTrue(registry.isRegistered(address(0x2)));
+    }
+
+    function testGetAllGyms() public {
+        registry.registerGym{value: 1 ether}("A", "Fire", "a", "a", _pokemon());
+        vm.deal(address(0x1), 10 ether);
+        vm.prank(address(0x1));
+        registry.registerGym{value: 1 ether}("B", "Water", "b", "b", _pokemon());
+        address[] memory all = registry.getAllGyms();
+        assertEq(all.length, 2);
     }
 
     function testGetUnregistered() public {
         vm.expectRevert("Gym not registered");
         registry.getGym(address(0xdead));
     }
+
+    receive() external payable {}
 }

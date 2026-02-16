@@ -214,6 +214,9 @@ export default function GymsPage() {
             <p className="text-[#8b82a8] text-sm mb-4 max-w-md">
               Claim your spot on-chain. Connect your wallet and register as a Gym Leader on Monad Testnet.
             </p>
+            <p className="text-[#7c3aed] text-sm font-[family-name:var(--font-orbitron)] font-bold mb-4">
+              Registration Fee: 1 MON
+            </p>
             <Link
               href="/create"
               className="inline-block bg-gradient-to-r from-[#7c3aed] to-[#6d28d9] text-white font-[family-name:var(--font-orbitron)] font-bold text-sm px-6 py-3 rounded-xl hover:shadow-[0_0_30px_rgba(124,58,237,0.4)] transition-all"

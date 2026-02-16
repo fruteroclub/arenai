@@ -21,8 +21,21 @@ contract GymRegistry {
     mapping(address => Gym) private gyms;
     address[] private gymAddresses;
 
+    address public owner;
+    uint256 public registrationFee = 1 ether;
+
     event GymRegistered(address indexed trainer, string name, string gymType);
     event GymUpdated(address indexed trainer, string name, string gymType);
+    event FeeCollected(address indexed trainer, uint256 amount);
+
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Not owner");
+        _;
+    }
+
+    constructor() {
+        owner = msg.sender;
+    }
 
     function registerGym(
         string calldata name,
@@ -30,7 +43,7 @@ contract GymRegistry {
         string calldata archetype,
         string calldata battleCry,
         Pokemon[3] calldata pokemonData
-    ) external {
+    ) external payable {
         _register(msg.sender, name, gymType, archetype, battleCry, pokemonData);
     }
 
@@ -41,7 +54,7 @@ contract GymRegistry {
         string calldata archetype,
         string calldata battleCry,
         Pokemon[3] calldata pokemonData
-    ) external {
+    ) external payable {
         _register(trainer, name, gymType, archetype, battleCry, pokemonData);
     }
 
@@ -54,6 +67,11 @@ contract GymRegistry {
         Pokemon[3] calldata pokemonData
     ) internal {
         bool updating = gyms[trainer].exists;
+
+        if (!updating) {
+            require(msg.value >= registrationFee, "Insufficient registration fee");
+            emit FeeCollected(trainer, msg.value);
+        }
 
         Gym storage g = gyms[trainer];
         g.name = name;
@@ -73,6 +91,19 @@ contract GymRegistry {
             emit GymUpdated(trainer, name, gymType);
         }
     }
+
+    function setRegistrationFee(uint256 newFee) external onlyOwner {
+        registrationFee = newFee;
+    }
+
+    function withdrawFees() external onlyOwner {
+        uint256 balance = address(this).balance;
+        require(balance > 0, "No fees to withdraw");
+        (bool ok,) = owner.call{value: balance}("");
+        require(ok, "Transfer failed");
+    }
+
+    receive() external payable {}
 
     function getGym(address trainer) external view returns (
         string memory name,

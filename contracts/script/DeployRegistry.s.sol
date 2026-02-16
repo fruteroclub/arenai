@@ -11,7 +11,9 @@ contract DeployRegistryScript is Script {
         GymRegistry registry = new GymRegistry();
         console.log("GymRegistry deployed at:", address(registry));
 
-        // Use deterministic addresses for each gym leader
+        // Set fee to 0 for initial registrations (we're owner)
+        registry.setRegistrationFee(0);
+
         GymRegistry.Pokemon[3] memory p1;
         p1[0] = GymRegistry.Pokemon("Garchomp", "Dragon", "Ground");
         p1[1] = GymRegistry.Pokemon("Hydreigon", "Dark", "Dragon");
@@ -35,6 +37,10 @@ contract DeployRegistryScript is Script {
         p4[1] = GymRegistry.Pokemon("Hatterene", "Psychic", "Fairy");
         p4[2] = GymRegistry.Pokemon("Alakazam", "Psychic", "");
         registry.registerGymFor(address(0x1004), "Jazz", "Fairy", "creative", "creativity is the strongest move", p4);
+
+        // Set fee to 1 MON for public registrations
+        registry.setRegistrationFee(1 ether);
+        console.log("Registration fee set to 1 MON");
 
         vm.stopBroadcast();
     }
