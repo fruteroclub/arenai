@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Orbitron } from "next/font/google";
 import { Navbar } from "@/components/navbar";
+import { Providers } from "@/components/providers";
 import "./globals.css";
 
 const inter = Inter({
@@ -23,8 +24,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${inter.variable} ${orbitron.variable}`}>
       <body className="antialiased min-h-screen font-[family-name:var(--font-inter)]">
-        <Navbar />
-        {children}
+        <Providers>
+          <Navbar />
+          {children}
+        </Providers>
       </body>
     </html>
   );

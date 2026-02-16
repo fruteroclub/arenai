@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { createPublicClient, http, formatEther } from "viem";
+import { ChallengeModal } from "@/components/challenge-modal";
 import {
   GYM_REGISTRY_ADDRESS,
   GYM_REGISTRY_ABI,
@@ -72,6 +73,7 @@ export default function GymsPage() {
   const [gyms, setGyms] = useState<OnChainGym[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [challengeGym, setChallengeGym] = useState<OnChainGym | null>(null);
 
   useEffect(() => {
     async function load() {
@@ -301,7 +303,10 @@ export default function GymsPage() {
                 <div className="text-[10px] text-[#6b6290] font-mono truncate max-w-[60%]">
                   {gym.address}
                 </div>
-                <button className="bg-gradient-to-r from-[#ef4444] to-[#dc2626] text-white font-[family-name:var(--font-orbitron)] font-bold text-xs px-4 py-2 rounded-xl hover:shadow-[0_0_20px_rgba(239,68,68,0.4)] transition-all cursor-pointer">
+                <button
+                  onClick={() => setChallengeGym(gym)}
+                  className="bg-gradient-to-r from-[#ef4444] to-[#dc2626] text-white font-[family-name:var(--font-orbitron)] font-bold text-xs px-4 py-2 rounded-xl hover:shadow-[0_0_20px_rgba(239,68,68,0.4)] transition-all cursor-pointer"
+                >
                   ⚔️ Challenge This Gym
                 </button>
               </div>
@@ -331,6 +336,13 @@ export default function GymsPage() {
           </div>
         </div>
       </div>
+
+      {challengeGym && (
+        <ChallengeModal
+          gym={challengeGym}
+          onClose={() => setChallengeGym(null)}
+        />
+      )}
     </div>
   );
 }
