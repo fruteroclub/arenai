@@ -243,7 +243,7 @@ export default function CreatePage() {
               </div>
 
               {/* Team grid */}
-              <div className="p-6 grid grid-cols-2 sm:grid-cols-3 gap-4">
+              <div className="p-6 grid grid-cols-3 gap-4">
                 {result.team.map((mon, i) => (
                   <div
                     key={mon.species}

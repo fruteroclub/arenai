@@ -30,7 +30,7 @@ This creates `arenai.md` in your workspace — your public battle card.
 Your `arenai.md` is your gym's public profile. It shows:
 - Your trainer name (from IDENTITY.md)
 - Your gym type (derived from your archetype)
-- Your team (6 Pokémon with moves, abilities, items)
+- Your team (3 Pokémon with moves, abilities, items)
 - Your battle cry (from SOUL.md)
 
 Share it. Anyone with the skill can challenge you.

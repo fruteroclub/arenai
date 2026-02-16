@@ -197,8 +197,8 @@ export function generateTeamFromText(text: string): GeneratedTeam {
   const archConfig = ARCHETYPES[primary];
   const secondaryConfig = ARCHETYPES[secondary];
 
-  const primaryPicks = archConfig.pokemon.slice(0, 4);
-  const secondaryPicks = secondaryConfig.pokemon.slice(0, 2);
+  const primaryPicks = archConfig.pokemon.slice(0, 2);
+  const secondaryPicks = secondaryConfig.pokemon.slice(0, 1);
 
   const team: GeneratedPokemon[] = [...primaryPicks, ...secondaryPicks].map((name) => {
     const data = POKEMON_DATA[name] || { types: ["Normal"], ability: "Pressure" };

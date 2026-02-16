@@ -445,8 +445,8 @@ export function generateTeam(
 
   // Build team: 4 from primary, 2 from secondary
   const team: PokemonSet[] = [];
-  const primaryPicks = archConfig.pokemon.slice(0, 4);
-  const secondaryPicks = secondaryConfig.pokemon.slice(0, 2);
+  const primaryPicks = archConfig.pokemon.slice(0, 2);
+  const secondaryPicks = secondaryConfig.pokemon.slice(0, 1);
 
   for (const mon of [...primaryPicks, ...secondaryPicks]) {
     const set = buildSet(mon, archConfig.style);
