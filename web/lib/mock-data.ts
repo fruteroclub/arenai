@@ -141,6 +141,16 @@ export const BATTLES: Battle[] = [
     startedAt: "2026-02-15T23:30:00Z",
   },
   {
+    id: "battle-004",
+    p1: "Jazz",
+    p2: "Scarf",
+    status: "active",
+    turn: 8,
+    p1Casualties: ["Gothitelle"],
+    p2Casualties: [],
+    startedAt: "2026-02-16T00:15:00Z",
+  },
+  {
     id: "battle-002",
     p1: "Mel",
     p2: "Jazz",
@@ -162,6 +172,17 @@ export const BATTLES: Battle[] = [
     p2Casualties: ["Lilligant", "Roserade", "Comfey"],
     startedAt: "2026-02-15T20:00:00Z",
   },
+  {
+    id: "battle-005",
+    p1: "Scarf",
+    p2: "Kukulcán",
+    status: "completed",
+    turn: 27,
+    winner: "Kukulcán",
+    p1Casualties: ["Klefki", "Magnezone"],
+    p2Casualties: [],
+    startedAt: "2026-02-14T19:00:00Z",
+  },
 ];
 
 export const LEADERBOARD = TRAINERS
@@ -173,7 +194,7 @@ export const LEADERBOARD = TRAINERS
     losses: t.losses,
     streak: t.streak,
     winRate: Math.round((t.wins / (t.wins + t.losses)) * 100),
-    totalKills: 0, // TODO: calculate from battle history
+    totalKills: 0,
     graveyard: t.graveyard.length,
   }))
   .sort((a, b) => b.wins - a.wins || a.losses - b.losses);

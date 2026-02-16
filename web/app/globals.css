@@ -1,25 +1,25 @@
 @import "tailwindcss";
 
 :root {
-  --bg-primary: #0a0a0f;
-  --bg-secondary: #12121a;
-  --bg-card: #1a1a2e;
-  --accent-red: #e63946;
-  --accent-blue: #457b9d;
-  --accent-gold: #f4a261;
-  --accent-green: #2a9d8f;
-  --text-primary: #e8e8e8;
-  --text-secondary: #a0a0b0;
+  --bg-deep: #0f0a1e;
+  --bg-card: #1a1030;
+  --bg-card-hover: #221540;
+  --accent-purple: #7c3aed;
+  --accent-red: #ef4444;
+  --accent-gold: #fbbf24;
+  --accent-cyan: #06b6d4;
+  --accent-green: #10b981;
+  --text-primary: #f0eef5;
+  --text-muted: #8b82a8;
 }
 
 body {
-  background: var(--bg-primary);
+  background: var(--bg-deep);
   color: var(--text-primary);
-  font-family: 'Inter', system-ui, sans-serif;
 }
 
 /* Pokemon type colors */
-.type-dragon { background: #6f35fc; }
+.type-dragon { background: #7c3aed; }
 .type-fire { background: #ee8130; }
 .type-water { background: #6390f0; }
 .type-electric { background: #f7d02c; color: #000; }
@@ -38,20 +38,205 @@ body {
 .type-fairy { background: #d685ad; }
 .type-normal { background: #a8a77a; }
 
-@keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 20px rgba(230, 57, 70, 0.3); }
-  50% { box-shadow: 0 0 40px rgba(230, 57, 70, 0.6); }
-}
+/* Gym type glows */
+.glow-dragon { --glow: #7c3aed; }
+.glow-steel { --glow: #b7b7ce; }
+.glow-grass { --glow: #7ac74c; }
+.glow-fairy { --glow: #d685ad; }
+.glow-fire { --glow: #ee8130; }
 
-.battle-active {
-  animation: pulse-glow 2s ease-in-out infinite;
-}
+/* ===== ANIMATIONS ===== */
 
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
+  50% { transform: translateY(-8px); }
 }
 
-.pokemon-sprite {
+@keyframes pulse-battle {
+  0%, 100% { box-shadow: 0 0 20px rgba(239, 68, 68, 0.3), inset 0 0 20px rgba(239, 68, 68, 0.05); }
+  50% { box-shadow: 0 0 40px rgba(239, 68, 68, 0.6), inset 0 0 30px rgba(239, 68, 68, 0.1); }
+}
+
+@keyframes glitch {
+  0%, 100% { text-shadow: 2px 0 #7c3aed, -2px 0 #ef4444; }
+  25% { text-shadow: -2px 0 #7c3aed, 2px 0 #06b6d4; }
+  50% { text-shadow: 2px 2px #ef4444, -2px -2px #7c3aed; }
+  75% { text-shadow: -2px 2px #06b6d4, 2px -2px #ef4444; }
+}
+
+@keyframes scan-line {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.5); }
+}
+
+@keyframes rotate-holo {
+  0% { --holo-angle: 0deg; }
+  100% { --holo-angle: 360deg; }
+}
+
+@keyframes winner-stamp {
+  0% { transform: scale(3) rotate(-15deg); opacity: 0; }
+  60% { transform: scale(1) rotate(-5deg); opacity: 1; }
+  100% { transform: scale(1) rotate(-3deg); opacity: 1; }
+}
+
+@keyframes connector-pulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+@keyframes energy-flow {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+.animate-float {
   animation: float 3s ease-in-out infinite;
+}
+
+.animate-pulse-battle {
+  animation: pulse-battle 2s ease-in-out infinite;
+}
+
+.animate-glitch {
+  animation: glitch 3s ease-in-out infinite;
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s ease-out both;
+}
+
+.animate-shimmer {
+  background-size: 200% auto;
+  animation: shimmer 3s linear infinite;
+}
+
+.animate-winner {
+  animation: winner-stamp 0.5s ease-out both;
+}
+
+.animate-connector {
+  animation: connector-pulse 2s ease-in-out infinite;
+}
+
+.animate-energy {
+  background-size: 200% auto;
+  animation: energy-flow 2s linear infinite;
+}
+
+/* Holographic card effect */
+.holo-card {
+  position: relative;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.holo-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  background: linear-gradient(
+    135deg,
+    transparent 20%,
+    rgba(124, 58, 237, 0.1) 30%,
+    rgba(6, 182, 212, 0.15) 40%,
+    rgba(251, 191, 36, 0.1) 50%,
+    rgba(239, 68, 68, 0.1) 60%,
+    rgba(124, 58, 237, 0.15) 70%,
+    transparent 80%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+.holo-card:hover::before {
+  opacity: 1;
+}
+
+.holo-card:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 0 30px color-mix(in srgb, var(--glow, #7c3aed) 40%, transparent),
+              0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+/* VS divider */
+.vs-divider {
+  background: linear-gradient(180deg, transparent, #ef4444, transparent);
+  width: 3px;
+}
+
+/* Scan line overlay */
+.scan-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(124, 58, 237, 0.03) 2px,
+    rgba(124, 58, 237, 0.03) 4px
+  );
+  pointer-events: none;
+}
+
+/* Neon text */
+.neon-text {
+  text-shadow: 0 0 10px currentColor, 0 0 40px currentColor;
+}
+
+/* Graveyard cross-out */
+.fallen-pokemon {
+  position: relative;
+}
+
+.fallen-pokemon::after {
+  content: '✕';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: #ef4444;
+  font-weight: 900;
+  opacity: 0.8;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0f0a1e;
+}
+::-webkit-scrollbar-thumb {
+  background: #2a1f4e;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #7c3aed;
+}
+
+/* Selection */
+::selection {
+  background: rgba(124, 58, 237, 0.4);
+  color: #fff;
 }
