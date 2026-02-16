@@ -1,13 +1,25 @@
 "use client";
 import { useEffect, useState } from "react";
-import { createPublicClient, http } from "viem";
-import { GYM_REGISTRY_ADDRESS, GYM_REGISTRY_ABI, MONAD_TESTNET } from "@/lib/contracts";
+import { createPublicClient, http, formatEther } from "viem";
+import {
+  GYM_REGISTRY_ADDRESS,
+  GYM_REGISTRY_ABI,
+  GYM_CHALLENGE_ADDRESS,
+  GYM_CHALLENGE_ABI,
+  MONAD_TESTNET,
+} from "@/lib/contracts";
 import Link from "next/link";
 
 interface Pokemon {
   species: string;
   type1: string;
   type2: string;
+}
+
+interface GymStats {
+  wins: bigint;
+  losses: bigint;
+  totalEarned: bigint;
 }
 
 interface OnChainGym {
@@ -18,6 +30,8 @@ interface OnChainGym {
   battleCry: string;
   pokemon: Pokemon[];
   timestamp: bigint;
+  challengeFee: bigint | null;
+  stats: GymStats | null;
 }
 
 const client = createPublicClient({
@@ -47,7 +61,10 @@ const TYPE_EMOJI: Record<string, string> = {
 };
 
 function sprite(name: string): string {
-  const slug = name.toLowerCase().replace(/[^a-z0-9]/g, "-").replace(/-+/g, "-");
+  const slug = name
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, "-")
+    .replace(/-+/g, "-");
   return `https://img.pokemondb.net/sprites/home/normal/${slug}.png`;
 }
 
@@ -74,18 +91,54 @@ export default function GymsPage() {
               functionName: "getGym",
               args: [addr],
             })) as any;
+
+            // Fetch challenge fee and stats (graceful fallback)
+            let challengeFee: bigint | null = null;
+            let stats: GymStats | null = null;
+
+            try {
+              challengeFee = (await client.readContract({
+                address: GYM_CHALLENGE_ADDRESS,
+                abi: GYM_CHALLENGE_ABI,
+                functionName: "challengeFee",
+                args: [addr],
+              })) as bigint;
+            } catch {
+              /* contract may not be live */
+            }
+
+            try {
+              const s = (await client.readContract({
+                address: GYM_CHALLENGE_ADDRESS,
+                abi: GYM_CHALLENGE_ABI,
+                functionName: "getGymStats",
+                args: [addr],
+              })) as [bigint, bigint, bigint];
+              stats = { wins: s[0], losses: s[1], totalEarned: s[2] };
+            } catch {
+              /* contract may not be live */
+            }
+
             return {
               address: addr,
               name: data[0],
               gymType: data[1],
               archetype: data[2],
               battleCry: data[3],
-              pokemon: (data[4] as unknown as Array<{ species: string; type1: string; type2: string }>).map((p) => ({
+              pokemon: (
+                data[4] as unknown as Array<{
+                  species: string;
+                  type1: string;
+                  type2: string;
+                }>
+              ).map((p) => ({
                 species: p.species,
                 type1: p.type1,
                 type2: p.type2,
               })),
               timestamp: data[5],
+              challengeFee,
+              stats,
             };
           })
         );
@@ -144,7 +197,9 @@ export default function GymsPage() {
               <div className="relative z-10 flex items-start justify-between mb-4">
                 <div>
                   <div className="flex items-center gap-3 mb-1">
-                    <span className="text-3xl">{TYPE_EMOJI[gym.gymType] || "🏟️"}</span>
+                    <span className="text-3xl">
+                      {TYPE_EMOJI[gym.gymType] || "🏟️"}
+                    </span>
                     <div>
                       <h3 className="text-xl font-[family-name:var(--font-orbitron)] font-black tracking-wide">
                         {gym.name}
@@ -165,6 +220,40 @@ export default function GymsPage() {
                 </div>
               </div>
 
+              {/* Challenge Fee + Stats */}
+              <div className="relative z-10 flex items-center gap-4 mb-4 text-xs">
+                <div className="bg-[#0f0a1e]/60 border border-[#7c3aed]/20 rounded-lg px-3 py-2">
+                  <span className="text-[#6b6290]">Challenge Fee: </span>
+                  <span className="text-[#7c3aed] font-bold font-[family-name:var(--font-orbitron)]">
+                    {gym.challengeFee && Number(gym.challengeFee) > 0
+                      ? `${formatEther(gym.challengeFee)} MON`
+                      : "—"}
+                  </span>
+                </div>
+                {gym.stats && (
+                  <div className="bg-[#0f0a1e]/60 border border-[#7c3aed]/20 rounded-lg px-3 py-2 flex gap-3">
+                    <span>
+                      <span className="text-green-400">W</span>{" "}
+                      <span className="text-white font-bold">
+                        {gym.stats.wins.toString()}
+                      </span>
+                    </span>
+                    <span>
+                      <span className="text-red-400">L</span>{" "}
+                      <span className="text-white font-bold">
+                        {gym.stats.losses.toString()}
+                      </span>
+                    </span>
+                    <span>
+                      <span className="text-yellow-400">💰</span>{" "}
+                      <span className="text-white font-bold">
+                        {formatEther(gym.stats.totalEarned)}
+                      </span>
+                    </span>
+                  </div>
+                )}
+              </div>
+
               {/* Pokemon Team */}
               <div className="relative z-10 mb-3">
                 <div className="text-[10px] text-[#8b82a8] uppercase tracking-[0.2em] mb-3 font-[family-name:var(--font-orbitron)]">
@@ -172,34 +261,49 @@ export default function GymsPage() {
                 </div>
                 <div className="flex gap-3">
                   {gym.pokemon.map((mon) => (
-                    <div key={mon.species} className="text-center group relative">
+                    <div
+                      key={mon.species}
+                      className="text-center group relative"
+                    >
                       <div className="w-20 h-20 relative">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={sprite(mon.species)}
                           alt={mon.species}
                           className="w-20 h-20 object-contain animate-float drop-shadow-[0_0_8px_rgba(124,58,237,0.3)]"
-                          style={{ animationDelay: `${Math.random() * 2}s` }}
+                          style={{
+                            animationDelay: `${Math.random() * 2}s`,
+                          }}
                         />
                       </div>
-                      <div className="text-[10px] text-[#8b82a8] mt-1">{mon.species}</div>
+                      <div className="text-[10px] text-[#8b82a8] mt-1">
+                        {mon.species}
+                      </div>
                       <div className="flex gap-1 justify-center mt-0.5">
-                        {[mon.type1, mon.type2].filter(Boolean).map((t) => (
-                          <span
-                            key={t}
-                            className={`type-${t.toLowerCase()} text-[8px] px-1.5 py-0.5 rounded-full font-bold uppercase`}
-                          >
-                            {t}
-                          </span>
-                        ))}
+                        {[mon.type1, mon.type2]
+                          .filter(Boolean)
+                          .map((t) => (
+                            <span
+                              key={t}
+                              className={`type-${t.toLowerCase()} text-[8px] px-1.5 py-0.5 rounded-full font-bold uppercase`}
+                            >
+                              {t}
+                            </span>
+                          ))}
                       </div>
                     </div>
                   ))}
                 </div>
               </div>
 
-              <div className="relative z-10 text-[10px] text-[#6b6290] font-mono truncate">
-                {gym.address}
+              {/* Challenge Button */}
+              <div className="relative z-10 flex items-center justify-between mt-4">
+                <div className="text-[10px] text-[#6b6290] font-mono truncate max-w-[60%]">
+                  {gym.address}
+                </div>
+                <button className="bg-gradient-to-r from-[#ef4444] to-[#dc2626] text-white font-[family-name:var(--font-orbitron)] font-bold text-xs px-4 py-2 rounded-xl hover:shadow-[0_0_20px_rgba(239,68,68,0.4)] transition-all cursor-pointer">
+                  ⚔️ Challenge This Gym
+                </button>
               </div>
             </div>
           ))}
@@ -212,7 +316,8 @@ export default function GymsPage() {
               Register Your Gym
             </h2>
             <p className="text-[#8b82a8] text-sm mb-4 max-w-md">
-              Claim your spot on-chain. Connect your wallet and register as a Gym Leader on Monad Testnet.
+              Claim your spot on-chain. Connect your wallet and register as a
+              Gym Leader on Monad Testnet.
             </p>
             <p className="text-[#7c3aed] text-sm font-[family-name:var(--font-orbitron)] font-bold mb-4">
               Registration Fee: 1 MON

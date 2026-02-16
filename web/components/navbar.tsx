@@ -10,6 +10,7 @@ export function Navbar() {
     { href: "/gyms", label: "On-Chain Gyms" },
     { href: "/create", label: "Create Your Gym" },
     { href: "/battle", label: "Battle" },
+    { href: "/badges", label: "Badges 🎖️" },
   ];
 
   return (

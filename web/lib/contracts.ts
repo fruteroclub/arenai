@@ -1,4 +1,6 @@
 export const GYM_REGISTRY_ADDRESS = "0xebDeae236ED701195823214e59D7a4245a2F1B3C" as const;
+export const GYM_CHALLENGE_ADDRESS = "0x950e44cc8d217a7ddeb7f7f11e8f31e62e6fcc84" as const;
+export const GYM_BADGE_ADDRESS = "0x100ab46d68f3fa49b231b9ab63eeb0983796a252" as const;
 
 export const GYM_REGISTRY_ABI = [
   {
@@ -64,6 +66,183 @@ export const GYM_REGISTRY_ABI = [
     inputs: [],
     outputs: [],
     stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "owner",
+    inputs: [],
+    outputs: [{ name: "", type: "address" }],
+    stateMutability: "view",
+  },
+] as const;
+
+export const GYM_CHALLENGE_ABI = [
+  {
+    type: "function",
+    name: "challengeFee",
+    inputs: [{ name: "", type: "address" }],
+    outputs: [{ name: "", type: "uint256" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "gymStats",
+    inputs: [{ name: "", type: "address" }],
+    outputs: [
+      { name: "wins", type: "uint256" },
+      { name: "losses", type: "uint256" },
+      { name: "totalEarned", type: "uint256" },
+    ],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "getGymStats",
+    inputs: [{ name: "gymLeader", type: "address" }],
+    outputs: [
+      { name: "wins", type: "uint256" },
+      { name: "losses", type: "uint256" },
+      { name: "totalEarned", type: "uint256" },
+    ],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "challenges",
+    inputs: [{ name: "", type: "uint256" }],
+    outputs: [
+      { name: "id", type: "uint256" },
+      { name: "challenger", type: "address" },
+      { name: "gymLeader", type: "address" },
+      { name: "wager", type: "uint256" },
+      { name: "createdAt", type: "uint256" },
+      { name: "status", type: "uint8" },
+    ],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "nextChallengeId",
+    inputs: [],
+    outputs: [{ name: "", type: "uint256" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "challenge",
+    inputs: [{ name: "gymLeader", type: "address" }],
+    outputs: [{ name: "", type: "uint256" }],
+    stateMutability: "payable",
+  },
+  {
+    type: "function",
+    name: "resolveChallenge",
+    inputs: [
+      { name: "challengeId", type: "uint256" },
+      { name: "challengerWon", type: "bool" },
+    ],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
+    name: "owner",
+    inputs: [],
+    outputs: [{ name: "", type: "address" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "MIN_CHALLENGE_FEE",
+    inputs: [],
+    outputs: [{ name: "", type: "uint256" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "PLATFORM_FEE_BPS",
+    inputs: [],
+    outputs: [{ name: "", type: "uint256" }],
+    stateMutability: "view",
+  },
+] as const;
+
+export const GYM_BADGE_ABI = [
+  {
+    type: "function",
+    name: "totalSupply",
+    inputs: [],
+    outputs: [{ name: "", type: "uint256" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "getBadge",
+    inputs: [{ name: "tokenId", type: "uint256" }],
+    outputs: [
+      {
+        name: "",
+        type: "tuple",
+        components: [
+          { name: "gymLeader", type: "address" },
+          { name: "challenger", type: "address" },
+          { name: "gymName", type: "string" },
+          { name: "gymType", type: "string" },
+          { name: "challengeId", type: "uint256" },
+          { name: "earnedAt", type: "uint256" },
+        ],
+      },
+    ],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "getBadgesByOwner",
+    inputs: [{ name: "_owner", type: "address" }],
+    outputs: [{ name: "", type: "uint256[]" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "ownerOf",
+    inputs: [{ name: "tokenId", type: "uint256" }],
+    outputs: [{ name: "", type: "address" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "tokenURI",
+    inputs: [{ name: "tokenId", type: "uint256" }],
+    outputs: [{ name: "", type: "string" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "balanceOf",
+    inputs: [{ name: "owner", type: "address" }],
+    outputs: [{ name: "", type: "uint256" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "name",
+    inputs: [],
+    outputs: [{ name: "", type: "string" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "symbol",
+    inputs: [],
+    outputs: [{ name: "", type: "string" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "minter",
+    inputs: [],
+    outputs: [{ name: "", type: "address" }],
+    stateMutability: "view",
   },
   {
     type: "function",
