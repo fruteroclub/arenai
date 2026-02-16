@@ -7,6 +7,7 @@ export function Navbar() {
   const links = [
     { href: "/", label: "Home" },
     { href: "/#trainers", label: "Gyms" },
+    { href: "/gyms", label: "On-Chain Gyms" },
     { href: "/create", label: "Create Your Gym" },
     { href: "/battle", label: "Battle" },
   ];
