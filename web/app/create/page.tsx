@@ -14,21 +14,86 @@ const ARCHETYPE_COLORS: Record<string, string> = {
   ancient: "#ee8130", speed: "#f7d02c",
 };
 
+const PRESETS = [
+  {
+    name: "The Visionary",
+    emoji: "🎨",
+    archetype: "creative",
+    desc: "Dreams in color, builds in code. Art meets algorithm.",
+    text: "I'm a creative visionary who sees beauty in everything. I dream of art that moves people, design that inspires, and imagination without limits. Music and poetry fuel my soul.",
+  },
+  {
+    name: "The Engineer",
+    emoji: "⚙️",
+    archetype: "technical",
+    desc: "Systems thinker. Debugs reality. Ships infrastructure.",
+    text: "I'm a technical engineer obsessed with building robust systems. Clean architecture, solid infrastructure, elegant algorithms. I debug everything and trust the data.",
+  },
+  {
+    name: "The Strategist",
+    emoji: "🐍",
+    archetype: "strategic",
+    desc: "Three moves ahead. Every decision compounds.",
+    text: "I'm a strategic leader who plans three moves ahead. I execute with precision, scale with vision, and lead with decisiveness. Growth is the only metric that matters.",
+  },
+  {
+    name: "The Guardian",
+    emoji: "🛡️",
+    archetype: "guardian",
+    desc: "Unbreakable walls. Protects what matters most.",
+    text: "I protect what matters. Security, stability, trust — these are my pillars. I guard the fort, audit the risks, and ensure nothing breaks on my watch.",
+  },
+  {
+    name: "The Rebel",
+    emoji: "🌀",
+    archetype: "chaotic",
+    desc: "Breaks the rules. Hacks the system. Thrives in chaos.",
+    text: "I'm a chaotic disruptor who breaks conventions. I hack systems, subvert expectations, and thrive in the wild unknown. Rules are suggestions. Weird is a compliment.",
+  },
+  {
+    name: "The Gardener",
+    emoji: "🌿",
+    archetype: "nature",
+    desc: "Nurtures growth. Builds community. Heals what's broken.",
+    text: "I nurture growth in everything — people, gardens, communities. I heal what's broken, bring harmony to chaos, and believe nature always finds a way.",
+  },
+  {
+    name: "The Oracle",
+    emoji: "🏛️",
+    archetype: "ancient",
+    desc: "Ancient wisdom meets modern fire. Cycles within cycles.",
+    text: "I carry ancient wisdom through modern cycles. The serpent sheds its skin but keeps its spine. Prophecy, ritual, fire — the old ways endure in new code.",
+  },
+  {
+    name: "The Speedrunner",
+    emoji: "⚡",
+    archetype: "speed",
+    desc: "Ship fast. Move faster. Speed is the ultimate strategy.",
+    text: "I move at velocity. Ship fast, iterate faster, blitz through obstacles. Agile is not a methodology, it's a lifestyle. Quick decisions, rapid execution.",
+  },
+];
+
 export default function CreatePage() {
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<GeneratedTeam | null>(null);
+  const [mode, setMode] = useState<"pick" | "custom">("pick");
 
-  const handleGenerate = () => {
-    if (!text.trim()) return;
+  const handleGenerate = (inputText?: string) => {
+    const t = inputText || text;
+    if (!t.trim()) return;
     setLoading(true);
     setResult(null);
-    // Fake delay for drama
     setTimeout(() => {
-      const team = generateTeamFromText(text);
+      const team = generateTeamFromText(t);
       setResult(team);
       setLoading(false);
-    }, 2500);
+    }, 2000);
+  };
+
+  const handlePresetClick = (preset: typeof PRESETS[0]) => {
+    setText(preset.text);
+    handleGenerate(preset.text);
   };
 
   return (
@@ -47,51 +112,98 @@ export default function CreatePage() {
             </span>
           </h1>
           <p className="text-[#8b82a8] text-lg">
-            describe your soul. receive your team.
+            choose your archetype. receive your team.
           </p>
         </div>
 
-        {!result && (
+        {!result && !loading && (
           <div className="animate-fade-in-up">
-            {/* Input card */}
-            <div className="bg-[#1a1030]/80 border border-[#7c3aed]/20 rounded-2xl p-8 backdrop-blur-sm">
-              <label className="block text-sm font-[family-name:var(--font-orbitron)] text-[#7c3aed] tracking-wider mb-4">
-                📝 PERSONALITY PROFILE
-              </label>
-              <textarea
-                value={text}
-                onChange={(e) => setText(e.target.value)}
-                placeholder="I'm a creative engineer who loves building beautiful systems. I value harmony between design and logic, and I believe in the power of community. I move fast, break things, and always protect my team..."
-                className="w-full h-48 bg-[#0f0a1e] border border-[#2a1f4e] rounded-xl p-5 text-[#f0eef5] placeholder-[#4a3f6e] resize-none focus:outline-none focus:border-[#7c3aed] transition-colors text-lg"
-              />
+            {/* Mode toggle */}
+            <div className="flex justify-center gap-2 mb-8">
               <button
-                onClick={handleGenerate}
-                disabled={loading || !text.trim()}
-                className="mt-6 w-full py-4 bg-gradient-to-r from-[#7c3aed] to-[#ef4444] rounded-xl font-[family-name:var(--font-orbitron)] font-bold text-lg tracking-wider hover:shadow-[0_0_40px_rgba(124,58,237,0.4)] transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                onClick={() => setMode("pick")}
+                className={`px-5 py-2 rounded-lg font-[family-name:var(--font-orbitron)] text-xs tracking-wider transition-all ${mode === "pick" ? "bg-[#7c3aed] text-white" : "border border-[#2a1f4e] text-[#8b82a8] hover:border-[#7c3aed]"}`}
               >
-                {loading ? "ANALYZING SOUL..." : "⚡ GENERATE MY TEAM"}
+                ⚡ PICK AN ARCHETYPE
+              </button>
+              <button
+                onClick={() => setMode("custom")}
+                className={`px-5 py-2 rounded-lg font-[family-name:var(--font-orbitron)] text-xs tracking-wider transition-all ${mode === "custom" ? "bg-[#7c3aed] text-white" : "border border-[#2a1f4e] text-[#8b82a8] hover:border-[#7c3aed]"}`}
+              >
+                📝 DESCRIBE YOURSELF
               </button>
             </div>
 
-            {/* Loading animation */}
-            {loading && (
-              <div className="mt-12 text-center">
-                <div className="inline-flex items-center gap-3">
-                  {["🔥", "⚡", "🌊", "🐉", "✨", "💀"].map((emoji, i) => (
-                    <span
-                      key={i}
-                      className="text-3xl animate-bounce"
-                      style={{ animationDelay: `${i * 0.15}s` }}
-                    >
-                      {emoji}
-                    </span>
-                  ))}
-                </div>
-                <p className="mt-4 text-[#8b82a8] font-[family-name:var(--font-orbitron)] text-sm tracking-wider animate-pulse">
-                  scanning personality matrix...
-                </p>
+            {mode === "pick" ? (
+              /* Preset archetype grid */
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                {PRESETS.map((preset) => (
+                  <button
+                    key={preset.archetype}
+                    onClick={() => handlePresetClick(preset)}
+                    className="group bg-[#1a1030]/80 border-2 rounded-2xl p-5 text-center transition-all duration-300 hover:scale-105 cursor-pointer"
+                    style={{
+                      borderColor: ARCHETYPE_COLORS[preset.archetype] + "30",
+                    }}
+                    onMouseEnter={(e) => {
+                      (e.currentTarget as HTMLElement).style.borderColor = ARCHETYPE_COLORS[preset.archetype];
+                      (e.currentTarget as HTMLElement).style.boxShadow = `0 0 30px ${ARCHETYPE_COLORS[preset.archetype]}33`;
+                    }}
+                    onMouseLeave={(e) => {
+                      (e.currentTarget as HTMLElement).style.borderColor = ARCHETYPE_COLORS[preset.archetype] + "30";
+                      (e.currentTarget as HTMLElement).style.boxShadow = "none";
+                    }}
+                  >
+                    <div className="text-4xl mb-3">{preset.emoji}</div>
+                    <div className="font-[family-name:var(--font-orbitron)] font-bold text-sm tracking-wider mb-2">
+                      {preset.name}
+                    </div>
+                    <p className="text-[#8b82a8] text-xs leading-relaxed">{preset.desc}</p>
+                  </button>
+                ))}
+              </div>
+            ) : (
+              /* Custom text input */
+              <div className="bg-[#1a1030]/80 border border-[#7c3aed]/20 rounded-2xl p-8 backdrop-blur-sm">
+                <label className="block text-sm font-[family-name:var(--font-orbitron)] text-[#7c3aed] tracking-wider mb-4">
+                  📝 PERSONALITY PROFILE
+                </label>
+                <textarea
+                  value={text}
+                  onChange={(e) => setText(e.target.value)}
+                  placeholder="I'm a creative engineer who loves building beautiful systems. I value harmony between design and logic, and I believe in the power of community. I move fast, break things, and always protect my team..."
+                  className="w-full h-48 bg-[#0f0a1e] border border-[#2a1f4e] rounded-xl p-5 text-[#f0eef5] placeholder-[#4a3f6e] resize-none focus:outline-none focus:border-[#7c3aed] transition-colors text-lg"
+                />
+                <button
+                  onClick={() => handleGenerate()}
+                  disabled={!text.trim()}
+                  className="mt-6 w-full py-4 bg-gradient-to-r from-[#7c3aed] to-[#ef4444] rounded-xl font-[family-name:var(--font-orbitron)] font-bold text-lg tracking-wider hover:shadow-[0_0_40px_rgba(124,58,237,0.4)] transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                >
+                  ⚡ GENERATE MY TEAM
+                </button>
               </div>
             )}
+
+          </div>
+        )}
+
+        {/* Loading animation */}
+        {loading && (
+          <div className="mt-12 text-center animate-fade-in-up">
+            <div className="inline-flex items-center gap-3">
+              {["🔥", "⚡", "🌊", "🐉", "✨", "💀"].map((emoji, i) => (
+                <span
+                  key={i}
+                  className="text-4xl animate-bounce"
+                  style={{ animationDelay: `${i * 0.15}s` }}
+                >
+                  {emoji}
+                </span>
+              ))}
+            </div>
+            <p className="mt-6 text-[#8b82a8] font-[family-name:var(--font-orbitron)] text-sm tracking-wider animate-pulse">
+              analyzing your soul...
+            </p>
           </div>
         )}
 
