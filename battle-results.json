@@ -1,0 +1,126 @@
+{
+  "contract": "0xfEf8833dE1956f24a134c77D30D2A64569637448",
+  "network": "monad-testnet",
+  "chainId": 10143,
+  "deployer": "0x5bE78a03706958cEA2b647600A634a58a69A7a06",
+  "timestamp": "2026-02-16T02:59:28.739Z",
+  "aiEngine": "SmartPlayerAI",
+  "matches": [
+    {
+      "matchId": "0x6172656e61692d6d617463682d312d3137373132313037333930363800000000",
+      "player1": "Blaze",
+      "player2": "Ironwall",
+      "winner": "Blaze",
+      "turns": 18,
+      "p1Casualties": [
+        "Jolteon",
+        "Cinderace",
+        "Gardevoir"
+      ],
+      "p2Casualties": [
+        "Blissey",
+        "Toxapex",
+        "Gardevoir",
+        "Skarmory",
+        "Hatterene",
+        "Ferrothorn"
+      ],
+      "txCreate": "0x957ef829f4ff60c83c9ba43bb5fcab1b9fa10951934e57e470d09254b86cde8b",
+      "txAccept": "same-wallet-demo",
+      "txResolve": "0x2e35ddb6459c167e7fbfac25216d8a936759fe31ba4ae9ad16186675085b9889"
+    },
+    {
+      "matchId": "0x6172656e61692d6d617463682d322d3137373132313037343530353100000000",
+      "player1": "Phantom",
+      "player2": "Sage",
+      "winner": "Phantom",
+      "turns": 15,
+      "p1Casualties": [
+        "Gengar",
+        "Sableye",
+        "Zoroark",
+        "Magnezone",
+        "Metagross"
+      ],
+      "p2Casualties": [
+        "Charizard",
+        "Arcanine",
+        "Volcarona",
+        "Chandelure",
+        "Gardevoir",
+        "Hatterene"
+      ],
+      "txCreate": "0x7b0a3c9f9ef9ce42c4587749031c2048478bb19c8dff2ad07eef55bbf4b36d5f",
+      "txAccept": "same-wallet-demo",
+      "txResolve": "0x7739f2d52d557d5ceadbe5ae67605a88724fc9b366c8b92c1f81079e35a61222"
+    },
+    {
+      "matchId": "0x6172656e61692d6d617463682d332d3137373132313037353039383500000000",
+      "player1": "Blaze",
+      "player2": "Pixel",
+      "winner": "Blaze",
+      "turns": 28,
+      "p1Casualties": [
+        "Jolteon",
+        "Cinderace",
+        "Gardevoir"
+      ],
+      "p2Casualties": [
+        "Magnezone",
+        "Metagross",
+        "Porygon-Z",
+        "Rotom",
+        "Gardevoir",
+        "Hatterene"
+      ],
+      "txCreate": "0x0e0d2fcf03b2c62c47f9bf22e2a151aceefc38239c2940d579d0e395e0d4dc34",
+      "txAccept": "same-wallet-demo",
+      "txResolve": "0x9677e57fb720dacc88eb8b9cb895045c70edb77b93ba680b34d0f5684b3e97b7"
+    },
+    {
+      "matchId": "0x6172656e61692d6d617463682d342d3137373132313037353639313400000000",
+      "player1": "Ironwall",
+      "player2": "Phantom",
+      "winner": "Phantom",
+      "turns": 27,
+      "p1Casualties": [
+        "Blissey",
+        "Ferrothorn",
+        "Toxapex",
+        "Skarmory",
+        "Gardevoir",
+        "Hatterene"
+      ],
+      "p2Casualties": [
+        "Sableye",
+        "Zoroark"
+      ],
+      "txCreate": "0x73c65657a49188816f3ba91340c2f439ce60ff3e8e66f2d21c659d26f472e4dd",
+      "txAccept": "same-wallet-demo",
+      "txResolve": "0x38c5a81673d5f03abd02e5092bfacef9b5585a4ecb410685836a06e8b7592b0e"
+    },
+    {
+      "matchId": "0x6172656e61692d6d617463682d352d3137373132313037363238343000000000",
+      "player1": "Sage",
+      "player2": "Pixel",
+      "winner": "Pixel",
+      "turns": 14,
+      "p1Casualties": [
+        "Gardevoir",
+        "Charizard",
+        "Volcarona",
+        "Arcanine",
+        "Chandelure",
+        "Hatterene"
+      ],
+      "p2Casualties": [
+        "Porygon-Z",
+        "Metagross",
+        "Magnezone"
+      ],
+      "txCreate": "0xa27f4541e666a15d8b9275d06f2794d691c7ae377b33acf0354a7da64f18a3cb",
+      "txAccept": "same-wallet-demo",
+      "txResolve": "0xa172565ce1ac86d6649dca63d4a3320f6294dfd682524ad8fd02edec369dedd0"
+    }
+  ]
+}
