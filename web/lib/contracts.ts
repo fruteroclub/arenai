@@ -1,6 +1,6 @@
 export const GYM_REGISTRY_ADDRESS = "0xebDeae236ED701195823214e59D7a4245a2F1B3C" as const;
-export const GYM_CHALLENGE_ADDRESS = "0x950e44cc8d217a7ddeb7f7f11e8f31e62e6fcc84" as const;
-export const GYM_BADGE_ADDRESS = "0x100ab46d68f3fa49b231b9ab63eeb0983796a252" as const;
+export const GYM_CHALLENGE_ADDRESS = "0x6ADcF86A224C97f0a49C82bDbaA3cb2a0d7082Dc" as const;
+export const GYM_BADGE_ADDRESS = "0x67B1029878e4a8E2D6E00401324B345738366743" as const;
 
 export const GYM_REGISTRY_ABI = [
   {
